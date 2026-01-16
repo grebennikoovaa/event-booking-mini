@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Events</title>
+</head>
+<body>
+  <h1>Events</h1>
+
+  {% if messages %}
+    <ul>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <ul>
+    {% for event in events %}
+      <li>
+        <a href="{% url 'event_detail' event.id %}">
+          {{ event.title }} — {{ event.start_datetime }}
+        </a>
+      </li>
+    {% empty %}
+      <li>No events yet.</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>
