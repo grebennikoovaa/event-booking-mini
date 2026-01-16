@@ -7,21 +7,29 @@ from .models import Event, Slot, Booking
 from .services import create_booking, cancel_booking
 
 
+def home(request):
+    return redirect("event_list")
+
+
 def event_list(request):
     events = Event.objects.filter(is_published=True).order_by("start_datetime")
+
+    for e in events:
+        e.next_slot = e.slots.first()  
+
     return render(request, "bookings/event_list.html", {"events": events})
 
 
 def event_detail(request, event_id: int):
     event = get_object_or_404(Event, id=event_id, is_published=True)
 
-    slots = event.slots.all()
-
+   
 
     user_booked_slot_ids = set()
     if request.user.is_authenticated:
         user_booked_slot_ids = set(
-            Booking.objects.filter(user=request.user, slot__event=event).values_list("slot_id", flat=True)
+            Booking.objects.filter(user=request.user, slot__event=event)
+            .values_list("slot_id", flat=True)
         )
 
     return render(
