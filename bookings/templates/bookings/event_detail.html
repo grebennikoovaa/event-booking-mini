@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ event.title }}</title>
+</head>
+<body>
+  <p><a href="{% url 'event_list' %}">← Back to events</a></p>
+
+  <h1>{{ event.title }}</h1>
+  <p><strong>When:</strong> {{ event.start_datetime }}</p>
+  <p><strong>Where:</strong> {{ event.location }}</p>
+  <p>{{ event.description }}</p>
+
+  {% if messages %}
+    <ul>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <h2>Slots</h2>
+  <ul>
+    {% for slot in slots %}
+      <li>
+        {{ slot.start_datetime }} |
+        Seats left: {{ slot.seats_left }}
+
+        {% if user.is_authenticated %}
+          {% if slot.id in user_booked_slot_ids %}
+            <form method="post" action="{% url 'cancel_slot' slot.id %}" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit">Cancel</button>
+            </form>
+          {% else %}
+            {% if slot.is_full %}
+              <button disabled>Full</button>
+            {% else %}
+              <form method="post" action="{% url 'book_slot' slot.id %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Book</button>
+              </form>
+            {% endif %}
+          {% endif %}
+        {% else %}
+          <em><a href="/admin/login/">Login to book</a></em>
+        {% endif %}
+      </li>
+    {% empty %}
+      <li>No slots for this event.</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>
