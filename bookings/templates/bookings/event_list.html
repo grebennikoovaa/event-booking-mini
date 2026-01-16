@@ -17,10 +17,16 @@
 
   <ul>
     {% for event in events %}
+    {% if event.next_slot %}
+  <div>Next slot: {{ event.next_slot.start_datetime }} ({{ event.next_slot.seats_left }} seats left)</div>
+{% else %}
+  <div>No slots</div>
+{% endif %}
       <li>
         <a href="{% url 'event_detail' event.id %}">
           {{ event.title }} — {{ event.start_datetime }}
         </a>
+        <div>{{ event.location }}</div>
       </li>
     {% empty %}
       <li>No events yet.</li>

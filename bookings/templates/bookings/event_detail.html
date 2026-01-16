@@ -21,11 +21,12 @@
   {% endif %}
 
   <h2>Slots</h2>
+
   <ul>
     {% for slot in slots %}
       <li>
-        {{ slot.start_datetime }} |
-        Seats left: {{ slot.seats_left }}
+        <strong>{{ slot.start_datetime }}</strong>
+        — Seats left: {{ slot.seats_left }}
 
         {% if user.is_authenticated %}
           {% if slot.id in user_booked_slot_ids %}
