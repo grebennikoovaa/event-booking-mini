@@ -87,3 +87,14 @@ def cancel_slot(request, slot_id: int):
         messages.error(request, str(e))
 
     return redirect("event_detail", event_id=slot.event_id)
+
+@login_required
+def my_bookings(request):
+    bookings = (
+        Booking.objects
+        .filter(user=request.user)
+        .select_related("slot", "slot__event")
+        .order_by("-created_at")
+    )
+
+    return render(request, "bookings/my_bookings.html", {"bookings": bookings})
