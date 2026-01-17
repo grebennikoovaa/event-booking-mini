@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}My Bookings · Event Booking{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h1 class="h3 mb-1">My Bookings</h1>
+    <div class="text-secondary">Your registrations for upcoming events.</div>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Event</th>
+          <th>Slot</th>
+          <th>Created</th>
+          <th class="text-end">Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for b in bookings %}
+          <tr>
+            <td>
+              <div class="fw-semibold">{{ b.slot.event.title }}</div>
+              <div class="text-secondary small">{{ b.slot.event.location }}</div>
+            </td>
+            <td>{{ b.slot.start_datetime }}</td>
+            <td class="text-secondary small">{{ b.created_at }}</td>
+            <td class="text-end">
+              <a class="btn btn-outline-secondary btn-sm"
+                 href="{% url 'event_detail' b.slot.event.id %}">
+                View
+              </a>
+
+              <form method="post" action="{% url 'cancel_slot' b.slot.id %}" class="d-inline">
+                {% csrf_token %}
+                <button class="btn btn-outline-danger btn-sm" type="submit">Cancel</button>
+              </form>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="4" class="text-secondary">
+              No bookings yet. Go to <a href="{% url 'event_list' %}">Events</a>.
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
