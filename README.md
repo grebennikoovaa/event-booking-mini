@@ -1,7 +1,7 @@
 # Event Booking Mini
 
 A mini web app for booking events: event list, seats/time slots, registration and cancellation.  
-Tech stack: Python + Django + Templates + TailwindCSS + HTMX + SQLite.
+Tech stack: Python + Django + Templates + Bootstrap.
 
 ---
 

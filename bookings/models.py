@@ -54,3 +54,11 @@ class Booking(models.Model):
         return self.seats_left() <= 0
 
    
+    def seats_taken(self) -> int:
+        return self.bookings.count()
+
+    def seats_percent(self) -> int:
+        if self.capacity == 0:
+            return 0
+        taken = self.seats_taken()
+        return int((taken / self.capacity) * 100)

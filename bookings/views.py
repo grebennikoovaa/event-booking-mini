@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.db.models import Q
+
 
 from .models import Event, Slot, Booking
 from .services import create_booking, cancel_booking
@@ -16,6 +18,15 @@ def home(request):
 
 def event_list(request):
     qs = Event.objects.filter(is_published=True).order_by("start_datetime")
+
+    # SEARCH
+    q = request.GET.get("q", "").strip()
+    if q:
+        qs = qs.filter(
+            Q(title__icontains=q) |
+            Q(location__icontains=q) |
+            Q(description__icontains=q)
+        )
 
     range_val = request.GET.get("range")
     now = timezone.now()
@@ -30,12 +41,11 @@ def event_list(request):
         end = now + timedelta(days=7)
         qs = qs.filter(start_datetime__gte=start, start_datetime__lte=end)
 
-    return render(request, "bookings/event_list.html", {"events": qs})
+    return render(request, "bookings/event_list.html", {"events": qs, "q": q, "range": range_val})
 
 def event_detail(request, event_id: int):
     event = get_object_or_404(Event, id=event_id, is_published=True)
 
-    # ВОТ ЭТОЙ СТРОКИ У ТЕБЯ НЕ ХВАТАЕТ:
     slots = event.slots.all()
 
     user_booked_slot_ids = set()
@@ -50,7 +60,7 @@ def event_detail(request, event_id: int):
         "bookings/event_detail.html",
         {
             "event": event,
-            "slots": slots,  # ← теперь slots существует
+            "slots": slots,  
             "user_booked_slot_ids": user_booked_slot_ids,
         },
     )
@@ -66,7 +76,7 @@ def book_slot(request, slot_id: int):
 
     try:
         create_booking(slot_id=slot.id, user=request.user)
-        messages.success(request, "Booked ✅")
+        messages.success(request, "Booking was completely successful!")
     except ValidationError as e:
         messages.error(request, str(e))
 
@@ -82,7 +92,7 @@ def cancel_slot(request, slot_id: int):
 
     try:
         cancel_booking(slot_id=slot.id, user=request.user)
-        messages.success(request, "Cancelled ✅")
+        messages.success(request, "Cancelled")
     except ValidationError as e:
         messages.error(request, str(e))
 
