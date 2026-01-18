@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Logged out · Easy Event{% endblock %}
+
+{% block content %}
+<div class="text-center py-5">
+  <h1 class="h3 fw-bold mb-2">You’re logged out ✅</h1>
+  <p class="text-secondary mb-4">See you soon.</p>
+  <a class="btn btn-primary rounded-pill px-4" href="{% url 'landing' %}">
+    Back to home
+  </a>
+</div>
+{% endblock %}

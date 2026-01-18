@@ -6,6 +6,8 @@ from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.db.models import Q
+from django.contrib.auth import login
+from .forms import SignUpForm
 
 
 
@@ -112,3 +114,14 @@ def my_bookings(request):
 
 def landing(request):
     return render(request, "landing.html")
+
+def signup(request):
+    if request.method == "POST":
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect("event_list")
+    else:
+        form = SignUpForm()
+    return render(request, "registration/signup.html", {"form": form})

@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Sign up · Easy Event{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-grid">
+
+    <div class="auth-ill">
+      <img src="{% static 'img/sign_up.svg' %}" alt="Sign up illustration">
+    </div>
+
+
+    <div class="auth-panel">
+      <div class="auth-top">
+        <span class="text-secondary">Already have an account?</span>
+        <a class="auth-link" href="{% url 'login' %}">Log in</a>
+      </div>
+
+      <h1 class="auth-title">Create Account</h1>
+
+      {% if form.errors %}
+        <div class="alert alert-danger mt-3">
+          Please fix the errors below.
+        </div>
+      {% endif %}
+
+      <form method="post" class="auth-form">
+        {% csrf_token %}
+
+        <div class="auth-input">
+          <span class="auth-icon">👤</span>
+          <input type="text" name="username" placeholder="Username" required value="{{ form.username.value|default_if_none:'' }}">
+        </div>
+        {% if form.username.errors %}<div class="auth-error">{{ form.username.errors|striptags }}</div>{% endif %}
+
+        <div class="auth-input">
+          <span class="auth-icon">✉️</span>
+          <input type="email" name="email" placeholder="Email" required value="{{ form.email.value|default_if_none:'' }}">
+        </div>
+        {% if form.email.errors %}<div class="auth-error">{{ form.email.errors|striptags }}</div>{% endif %}
+
+        <div class="auth-input">
+          <span class="auth-icon">🔑</span>
+          <input type="password" name="password1" placeholder="Password" required>
+        </div>
+        {% if form.password1.errors %}<div class="auth-error">{{ form.password1.errors|striptags }}</div>{% endif %}
+
+        <div class="auth-input">
+          <span class="auth-icon">🔑</span>
+          <input type="password" name="password2" placeholder="Password" required>
+        </div>
+        {% if form.password2.errors %}<div class="auth-error">{{ form.password2.errors|striptags }}</div>{% endif %}
+
+        <div class="auth-actions">
+          <button class="auth-btn" type="submit">SIGN UP</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

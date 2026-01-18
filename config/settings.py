@@ -112,7 +112,8 @@ STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
+LOGIN_REDIRECT_URL = "/events/"
+LOGOUT_REDIRECT_URL = "/"
 
-LOGIN_REDIRECT_URL = "event_list"
-LOGOUT_REDIRECT_URL = "event_list"
 
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

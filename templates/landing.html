@@ -9,7 +9,8 @@
 {% block content %}
 <div class="landing-wrap">
 
-  <div class="landing-hero">
+  <section class="landing-hero">
+    <!-- LEFT -->
     <div class="landing-left">
       <h1 class="landing-title">
         <span class="dark">Book</span>
@@ -22,70 +23,40 @@
         Clean UI, fast flow — perfect for university open days, workshops, and clubs.
       </p>
 
-      <a href="{% url 'event_list' %}" class="landing-cta">
-        EXPLORE EVENTS
-      </a>
-    </div>
-
-    <div class="landing-right">
-      <div class="mock-screen">
-        <div class="mock-top">
-          <div class="dot red"></div>
-          <div class="dot yellow"></div>
-          <div class="dot green"></div>
-        </div>
-
-        <div class="mock-body">
-          <div class="mock-card">
-            <div class="mock-card-title">Uni Open Day</div>
-            <div class="mock-card-text">Main Hall · Tomorrow 10:00</div>
-
-            <div class="mock-progress-label">
-              <span>Seats left</span>
-              <span>7/10</span>
-            </div>
-
-            <div class="mock-progress">
-              <div class="mock-progress-fill" style="width:70%"></div>
-            </div>
-
-            <div class="mock-actions">
-              <span class="mock-badge open">Open</span>
-              <button class="mock-btn">Book</button>
-            </div>
-          </div>
-
-          <div class="mock-card">
-            <div class="mock-card-title">Python UI Workshop</div>
-            <div class="mock-card-text">Lab 2 · This week</div>
-
-            <div class="mock-actions">
-              <span class="mock-badge full">Full</span>
-              <button class="mock-btn disabled" disabled>Full</button>
-            </div>
-          </div>
-        </div>
+      <div class="landing-actions">
+        <a href="{% url 'event_list' %}" class="landing-cta">EXPLORE EVENTS</a>
       </div>
     </div>
-  </div>
 
-  <!-- features -->
-  <div class="landing-features">
+    <!-- RIGHT -->
+    <div class="landing-right">
+      <div class="hero-visual">
+        <img
+          class="hero-illustration"
+          src="{% static 'img/image_on_landing_page.svg' %}"
+          alt="Event illustration"
+        >
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="landing-features">
     <div class="feature-card">
       <div class="feature-title">Card-based events</div>
       <div class="feature-text">Clean list with filters and search.</div>
     </div>
 
     <div class="feature-card">
-      <div class="feature-title">Slots & capacity</div>
+      <div class="feature-title">Slots &amp; capacity</div>
       <div class="feature-text">See seats left with progress bars.</div>
     </div>
 
     <div class="feature-card">
-      <div class="feature-title">Book & cancel</div>
-      <div class="feature-text">Fast flow with clear actions.</div>
+      <div class="feature-title">Book &amp; cancel</div>
+      <div class="feature-text">One-click actions with alerts.</div>
     </div>
-  </div>
+  </section>
 
 </div>
 {% endblock %}
