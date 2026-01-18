@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.db.models import Q
 
 
+
 from .models import Event, Slot, Booking
 from .services import create_booking, cancel_booking
 
@@ -108,3 +109,6 @@ def my_bookings(request):
     )
 
     return render(request, "bookings/my_bookings.html", {"bookings": bookings})
+
+def landing(request):
+    return render(request, "landing.html")
