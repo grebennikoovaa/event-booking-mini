@@ -13,6 +13,8 @@ class Event(models.Model):
     is_published = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    poster = models.ImageField(upload_to="posters/", blank=True, null=True)
+
     class Meta:
         ordering = ["start_datetime"]
 
@@ -62,3 +64,14 @@ class Booking(models.Model):
             return 0
         taken = self.seats_taken()
         return int((taken / self.capacity) * 100)
+
+class Favorite(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    event = models.ForeignKey("Event", on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("user", "event")
+
+    def __str__(self):
+        return f"{self.user} ❤️ {self.event}"

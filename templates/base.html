@@ -36,6 +36,12 @@
                 Events
               </a>
             </li>
+            <li class="nav-item">
+  <a class="nav-link" href="{% if user.is_authenticated %}{% url 'profile' %}{% else %}{% url 'login' %}{% endif %}">
+    Profile
+  </a>
+</li>
+
           </ul>
 
           <div class="d-flex gap-2 align-items-center">
@@ -83,7 +89,7 @@
 
   <footer class="border-top" style="background:#f5f1e8;">
     <div class="container py-3 small text-secondary">
-      Easy Event · Django + Bootstrap
+      Easy Event 
     </div>
   </footer>
 

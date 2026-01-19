@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Profile · Easy Event{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h1 class="h3 fw-bold m-0">Profile</h1>
+    <div class="text-secondary">Hi, {{ user.username }} 👋</div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-12 col-lg-6">
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <h2 class="h5 fw-bold mb-3">❤️ Favorites</h2>
+
+        {% for f in favorites %}
+          <div class="d-flex align-items-center justify-content-between border-bottom py-2">
+            <div class="fw-semibold">{{ f.event.title }}</div>
+            <a class="btn btn-outline-primary btn-sm rounded-pill"
+               href="{% url 'event_detail' f.event.id %}">Open</a>
+          </div>
+        {% empty %}
+          <div class="text-secondary">No favorites yet. Go to Events and tap 🤍.</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-6">
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <h2 class="h5 fw-bold mb-3">📌 My Bookings</h2>
+
+        {% for b in my_bookings %}
+          <div class="border-bottom py-2">
+            <div class="fw-semibold">{{ b.slot.event.title }}</div>
+            <div class="text-secondary small">
+              {{ b.slot.start_datetime }}
+            </div>
+          </div>
+        {% empty %}
+          <div class="text-secondary">No bookings yet.</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

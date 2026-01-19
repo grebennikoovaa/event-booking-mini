@@ -1,17 +1,16 @@
 from datetime import timedelta
-
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
-from django.db.models import Q
+from django.db.models import Q, Min
 from django.contrib.auth import login
 from .forms import SignUpForm
 
 
 
-from .models import Event, Slot, Booking
+from .models import Event, Slot, Booking, Favorite
 from .services import create_booking, cancel_booking
 
 
@@ -20,31 +19,31 @@ def home(request):
 
 
 def event_list(request):
-    qs = Event.objects.filter(is_published=True).order_by("start_datetime")
+    sort = request.GET.get("sort", "soon")  
 
-    # SEARCH
-    q = request.GET.get("q", "").strip()
-    if q:
-        qs = qs.filter(
-            Q(title__icontains=q) |
-            Q(location__icontains=q) |
-            Q(description__icontains=q)
+    qs = Event.objects.all()
+
+    qs = qs.annotate(next_slot=Min("slots__start_datetime"))
+
+    if sort == "newest":
+        qs = qs.order_by("-id")
+    elif sort == "title":
+        qs = qs.order_by("title")
+    else:  
+        qs = qs.order_by("next_slot", "title")
+    
+    fav_ids = set()
+    if request.user.is_authenticated:
+        fav_ids = set(
+            Favorite.objects.filter(user=request.user).values_list("event_id", flat=True)
         )
 
-    range_val = request.GET.get("range")
-    now = timezone.now()
+    return render(
+        request,
+        "bookings/event_list.html",
+        {"events": qs, "sort": sort, "fav_ids": fav_ids},
+    )
 
-    if range_val == "today":
-        start = now.replace(hour=0, minute=0, second=0, microsecond=0)
-        end = start + timedelta(days=1)
-        qs = qs.filter(start_datetime__gte=start, start_datetime__lt=end)
-
-    elif range_val == "week":
-        start = now
-        end = now + timedelta(days=7)
-        qs = qs.filter(start_datetime__gte=start, start_datetime__lte=end)
-
-    return render(request, "bookings/event_list.html", {"events": qs, "q": q, "range": range_val})
 
 def event_detail(request, event_id: int):
     event = get_object_or_404(Event, id=event_id, is_published=True)
@@ -125,3 +124,39 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, "registration/signup.html", {"form": form})
+
+@login_required
+def toggle_favorite(request, event_id):
+    if request.method != "POST":
+        return redirect("event_list")
+
+    event = get_object_or_404(Event, id=event_id)
+
+    fav, created = Favorite.objects.get_or_create(user=request.user, event=event)
+    if not created:
+        fav.delete()
+        messages.info(request, "Removed from favorites.")
+    else:
+        messages.success(request, "Added to favorites!")
+
+    return redirect(request.META.get("HTTP_REFERER", "event_list"))
+
+@login_required
+def profile(request):
+    favorites = (
+        Favorite.objects.filter(user=request.user)
+        .select_related("event")
+        .order_by("-created_at")
+    )
+
+    my_bookings = (
+        Booking.objects.filter(user=request.user)
+        .select_related("slot", "slot__event")
+        .order_by("-id")
+    )
+
+    return render(
+        request,
+        "bookings/profile.html",
+        {"favorites": favorites, "my_bookings": my_bookings},
+    )
