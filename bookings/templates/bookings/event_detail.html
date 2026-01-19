@@ -49,10 +49,10 @@
       <tbody>
         {% for slot in slots %}
           <tr>
-            <!-- TIME -->
+    
             <td class="fw-semibold">{{ slot.start_datetime }}</td>
 
-            <!-- SEATS (Progress Bar) -->
+  
             <td style="min-width: 240px;">
               {% if slot.capacity %}
                 <div class="d-flex justify-content-between small text-secondary mb-1">
@@ -71,7 +71,6 @@
               {% endif %}
             </td>
 
-            <!-- ACTION -->
             <td class="text-end">
               {% if user.is_authenticated %}
                 {% if slot.id in user_booked_slot_ids %}
