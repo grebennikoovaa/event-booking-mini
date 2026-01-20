@@ -4,10 +4,9 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
-from django.db.models import Q, Min
+from django.db.models import Q, Min, Count
 from django.contrib.auth import login
 from .forms import SignUpForm
-
 
 
 from .models import Event, Slot, Booking, Favorite
@@ -48,24 +47,36 @@ def event_list(request):
 def event_detail(request, event_id: int):
     event = get_object_or_404(Event, id=event_id, is_published=True)
 
-    slots = event.slots.all()
+    slots = Slot.objects.filter(event=event).order_by("start_datetime")
 
-    user_booked_slot_ids = set()
+    booking_counts = (
+        Booking.objects.filter(slot__in=slots)
+        .values("slot_id")
+        .annotate(c=Count("id"))
+    )
+    count_map = {x["slot_id"]: x["c"] for x in booking_counts}
+
+    my_slot_ids = set()
     if request.user.is_authenticated:
-        user_booked_slot_ids = set(
-            Booking.objects.filter(user=request.user, slot__event=event)
-            .values_list("slot_id", flat=True)
+        my_slot_ids = set(
+            Booking.objects.filter(user=request.user, slot__in=slots).values_list("slot_id", flat=True)
         )
 
-    return render(
-        request,
-        "bookings/event_detail.html",
-        {
-            "event": event,
-            "slots": slots,  
-            "user_booked_slot_ids": user_booked_slot_ids,
-        },
-    )
+    for s in slots:
+        booked = count_map.get(s.id, 0)
+        capacity = getattr(s, "capacity", 0) or 0
+        seats_left = max(capacity - booked, 0)
+        percent_booked = 0
+        if capacity > 0:
+            percent_booked = int((booked / capacity) * 100)
+
+        s.seats_left = seats_left
+        s.percent_booked = percent_booked
+        s.is_booked_by_me = s.id in my_slot_ids
+
+        event.next_slot = slots[0].start_datetime if slots else None
+
+    return render(request, "bookings/event_detail.html", {"event": event, "slots": slots})
 
 
 
