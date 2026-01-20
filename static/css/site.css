@@ -1,0 +1,42 @@
+
+body.bg-light{
+  background: #f5f1e8 !important;
+}
+
+
+.nav-card{
+  width: 100%;
+  background: rgba(255,255,255,0.75);
+  border: 2px solid #d9dbe3;
+  border-radius: 16px;
+  padding: 10px 16px;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.06);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+}
+
+.navbar .nav-link{
+  color: #1e2432;
+  font-weight: 600;
+  padding: 10px 12px;
+  border-radius: 999px;
+}
+
+.navbar .nav-link.active{
+  color: #4c74ff;
+  background: rgba(76,116,255,0.10);
+}
+
+
+.navbar-brand{
+  display:flex;
+  align-items:center;
+  padding:0;
+  margin:0;
+  line-height:1;
+}
+.navbar-brand img{
+  display:block;
+  margin-top:2px;
+}
