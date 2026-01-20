@@ -1,71 +1,50 @@
-# Event Booking Mini
+# Easy Event - Event booking web application
 
-A mini web app for booking events: event list, seats/time slots, registration and cancellation.  
-Tech stack: Python + Django + Templates + Bootstrap.
+**Easy Event** is a mini web application for booking event time slots.  
+Users can browse and explore events, view remaining seats, book/cancel slots and save events to favorites.  
+The project focuses on UI using Bootstrap and custom CSS and backend logic was implemented by Django, database and authentication.
 
----
 
-## Features (MVP)
+## Features
 - Event list displayed as cards
 - Date filtering (Today / This week / Custom range)
 - Event details page
 - Book an event/slot with seat limits
 - Cancel booking
 - Authentication 
-## Pages
-- `/events` — event list + date filter (cards, “seats left”)
-- `/events/<id>` — event details + slot list + Book/Cancel button
-- `/login` — login (if using Django auth)
-- `/logout` — logout (if using Django auth)
+## Pages 
+- Landing page
+- Events page with card grid 
+- Event detail page with available slots
+- Slot booking + cancellation
+- Favorites
+- Profile page which contains:
+  - Favorites list
+  - Bookings list
+- Authentication:
+  - Sign up 
+  - Log in / log out
 
----
 
-## UI Components
-- `EventCard` — event card (title, date, “seats left”, View button)
-- `DateFilter` — date filter (Today / This week / Range)
-- `SlotList` — list of available time slots (if using slots)
-- `BookingButton` — Book/Cancel button with dynamic updates (“seats left”)
+## UI/Design 
+User interface is based on Figma-style layouts, implemented with:
+- Bootstrap 5
+- CSS: 'landing.css', 'events.css', 'auth.css'
 
----
+## Algorithm of the website:
 
-## Data Model
-### Slot-based version (recommended)
-- `Event` — event information (title, description, location, dates)
-- `Slot` — time slot for an event (event, start_datetime, capacity)
-- `Booking` — user booking (slot, user, created_at)
+### 1) Events and slots
+- An **Event** is the main object which incude title, description, location, poster
+- Each Event contains **Slots**
+- Each Slot has:
+  - date & time
+  - seats limit
 
-**Seats left** = `Slot.capacity - number_of_bookings`
+### 2) Booking system
+- A user can book a slot if seats are available
+- Booking is stored as a **Booking** records and user can cancel a booking 
 
----
+### 3) Favorites
+- A user can save events in favorites
+- Favorites are stored in **Favorite** table in profile page
 
-## Development workflow (Team rules)
-- Do NOT push directly to `main`
-- Work only in feature branches:
-  - Backend: `backend/*` (e.g. `backend/models`, `backend/views`)
-  - UI: `ui/*` (e.g. `ui/layout`, `ui/pages`, `ui/htmx`)
-- Create a Pull Request for every feature
-- Require at least 1 approval before merging
-
----
-
-## Suggested task split (2 people)
-**Person A (Backend):**
-- Django setup + models + booking logic + routes/views
-
-**Person B (UI/UX):**
-- Tailwind design + templates + HTMX interactivity
-
----
-
-## How to run (local)
-```bash
-python -m venv venv
-# Windows:
-venv\Scripts\activate
-# macOS/Linux:
-source venv/bin/activate
-
-pip install -r requirements.txt
-python manage.py migrate
-python manage.py createsuperuser
-python manage.py runserver
